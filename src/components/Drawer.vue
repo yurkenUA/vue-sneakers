@@ -5,11 +5,13 @@ import CartItemList from './CartItemList.vue'
 import InfoBlock from './InfoBlock.vue'
 import axios from 'axios'
 
+const apiUrl = import.meta.env.VITE_APP_API_URL
+
 const props = defineProps({
   totalPrice: Number
 })
 
-const { cart, closeDrawer } = inject('cart')
+const { cart } = inject('cart')
 
 const isCreatingOrder = ref(false)
 const orderId = ref(null)
@@ -17,7 +19,7 @@ const orderId = ref(null)
 const createOrder = async () => {
   try {
     isCreatingOrder.value = true
-    const { data } = await axios.post(`https://79da9b92723d58b9.mokky.dev/order`, {
+    const { data } = await axios.post(`${apiUrl}/order`, {
       items: cart.value,
       totalPrice: props.totalPrice.value
     })

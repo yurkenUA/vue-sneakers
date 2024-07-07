@@ -4,6 +4,8 @@ import debounce from 'lodash.debounce'
 import { inject, onMounted, reactive, ref, watch } from 'vue'
 import CardList from '../components/CardList.vue'
 
+const apiUrl = import.meta.env.VITE_APP_API_URL
+
 const { cart, addToCart, removeFromCart } = inject('cart')
 
 const items = ref([])
@@ -37,12 +39,12 @@ const addToFavorite = async (item) => {
       }
       item.isFavorite = true
 
-      const { data } = await axios.post(`https://79da9b92723d58b9.mokky.dev/favorites`, obj)
+      const { data } = await axios.post(`${apiUrl}/favorites`, obj)
       item.favoriteId = data.id
     } else {
       item.isFavorite = false
 
-      await axios.delete(`https://79da9b92723d58b9.mokky.dev/favorites/${item.favoriteId}`)
+      await axios.delete(`${apiUrl}/favorites/${item.favoriteId}`)
       item.favoriteId = null
     }
   } catch (error) {
@@ -52,7 +54,7 @@ const addToFavorite = async (item) => {
 
 const fetchFsavorites = async () => {
   try {
-    const { data: favorites } = await axios.get(`https://79da9b92723d58b9.mokky.dev/favorites`)
+    const { data: favorites } = await axios.get(`${apiUrl}/favorites`)
     items.value = items.value.map((item) => {
       const favorite = favorites.find((favorite) => favorite.item_id === item.id)
 
@@ -80,7 +82,7 @@ const fetchItems = async () => {
     if (filters.searchQuery) {
       params.title = `*${filters.searchQuery}*`
     }
-    const { data } = await axios.get(`https://79da9b92723d58b9.mokky.dev/items`, {
+    const { data } = await axios.get(`${apiUrl}/items`, {
       params
     })
     items.value = data.map((obj) => ({
